@@ -1,0 +1,8 @@
+{
+  "name": "dlp",
+  "version": "0.0.1",
+  "description": "Download Player",
+  "type": "module",
+  "author": "FedYou",
+  "license": "MIT"
+}
