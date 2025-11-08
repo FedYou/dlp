@@ -13,7 +13,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "utils/*": ["src/utils/*"],
+      "global/*": ["src/global/*"],
+      "types/*": ["types/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "types"]
 }
