@@ -1,5 +1,6 @@
 import blessed from 'blessed'
 import { screen, render } from './global/screen'
+import Status from 'components/status'
 
 enum LABEL {
   INPUT_URL_TOP = 'URL',
@@ -8,7 +9,8 @@ enum LABEL {
   INPUT_URL_INVALID = 'Invalid URL',
   INPUT_URL_VALID_YT = 'Valid URL - Youtube',
   INPUT_URL_VALID_IG = 'Valid URL - Instagram',
-  INPUT_URL_VALID_TK = 'Valid URL - TikTok'
+  INPUT_URL_VALID_TK = 'Valid URL - TikTok',
+  FOOTER = '[q | C-c] exit'
 }
 
 enum COLOR {
@@ -32,6 +34,10 @@ const STYLES = {
       fg: COLOR.YELLOW,
       bold: true
     }
+  },
+  FOOTER: {
+    fg: COLOR.WHITE,
+    bg: COLOR.BLACK
   }
 }
 
@@ -149,7 +155,33 @@ export {
 // ---------------------------------------------
 // ---------------------------------------------
 
-append([$URLBox])
+// ---------------------------------------------
+// ---------- Footer ---------------------------
+// ---------------------------------------------
+
+const $Footer = blessed.box({
+  parent: page,
+  bottom: '0',
+  left: 'center',
+  width: '100%',
+  height: 1,
+  content: LABEL.FOOTER,
+  style: STYLES.FOOTER
+})
+
+export const $status = new Status()
+
+$status.left = '50%-3'
+$status.top = '0%-3'
+$status.type('any')
+
+$Footer.append($status.element)
+
+// ---------------------------------------------
+// ---------------------------------------------
+// ---------------------------------------------
+
+append([$URLBox, $Footer])
 
 render()
 
