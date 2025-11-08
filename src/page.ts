@@ -1,6 +1,7 @@
 import blessed from 'blessed'
 import { screen, render } from './global/screen'
 import Status from 'components/status'
+import lbar from 'components/lbar'
 
 enum LABEL {
   INPUT_URL_TOP = 'URL',
@@ -10,6 +11,9 @@ enum LABEL {
   INPUT_URL_VALID_YT = 'Valid URL - Youtube',
   INPUT_URL_VALID_IG = 'Valid URL - Instagram',
   INPUT_URL_VALID_TK = 'Valid URL - TikTok',
+  DOWNLOADING_VIDEO = 'Downloading video',
+  DOWNLOADING_AUDIO = 'Downloading audio',
+  DOWNLOADING_THUMBNAIL = 'Downloading thumbnail',
   FOOTER = '[q | C-c] exit'
 }
 
@@ -34,6 +38,16 @@ const STYLES = {
       fg: COLOR.YELLOW,
       bold: true
     }
+  },
+  DLBAR: {
+    border: {
+      fg: COLOR.CYAN
+    },
+    label: {
+      fg: COLOR.CYAN,
+      bold: true
+    },
+    fg: COLOR.CYAN
   },
   FOOTER: {
     fg: COLOR.WHITE,
@@ -156,6 +170,87 @@ export {
 // ---------------------------------------------
 
 // ---------------------------------------------
+// ---------- Download bar ---------------------
+// ---------------------------------------------
+
+const $DLbar = blessed.box({
+  parent: page,
+  top: '50%-3',
+  left: '13%',
+  width: '75%',
+  height: '0%+3',
+  border: 'line',
+  hidden: true,
+  label: LABEL.DOWNLOADING_THUMBNAIL,
+  style: STYLES.DLBAR
+})
+const $DLbarLabelTop = blessed.text({
+  parent: $DLbar,
+  top: '0%-1',
+  width: 'shrink',
+  height: '5%',
+  style: {
+    fg: STYLES.DLBAR.border.fg
+  }
+})
+
+const $DLbarLabelBottom = blessed.text({
+  parent: $DLbar,
+  top: '0%+1',
+  width: 'shrink',
+  height: '5%',
+  tags: true,
+  style: {
+    fg: STYLES.DLBAR.border.fg
+  }
+})
+
+// ----------------- Fuctions ------------------
+
+function updateDownloadBar(
+  type: 'video' | 'audio' | 'thumbnail',
+  progress: {
+    progress: number
+    speed: string
+    eta: string
+    byDownload: string
+    downloaded: string
+  }
+) {
+  const labelTop = `${progress.downloaded}/${progress.byDownload}`
+  const labelBottom = `Speed ${progress.speed} ETA ${progress.eta}`
+
+  $DLbarLabelTop.left = `75%-${Math.round(labelTop.length / 2)}`
+  $DLbarLabelTop.setContent(labelTop)
+
+  $DLbarLabelBottom.left = `50%-${Math.floor(labelBottom.length / 1.8)}`
+  $DLbarLabelBottom.setContent(labelBottom)
+
+  $DLbar.setContent(lbar(($DLbar.width as number) - 1, progress.progress))
+
+  if (type === 'video') {
+    $DLbar.setLabel(LABEL.DOWNLOADING_VIDEO)
+  } else if (type === 'audio') {
+    $DLbar.setLabel(LABEL.DOWNLOADING_AUDIO)
+  } else {
+    $DLbar.setLabel(LABEL.DOWNLOADING_THUMBNAIL)
+  }
+
+  render()
+}
+
+function isVisibleDLBar() {
+  $DLbar.hidden = !$DLbar.hidden
+  render()
+}
+
+export { updateDownloadBar, isVisibleDLBar }
+
+// ---------------------------------------------
+// ---------------------------------------------
+// ---------------------------------------------
+
+// ---------------------------------------------
 // ---------- Footer ---------------------------
 // ---------------------------------------------
 
@@ -181,7 +276,7 @@ $Footer.append($status.element)
 // ---------------------------------------------
 // ---------------------------------------------
 
-append([$URLBox, $Footer])
+append([$URLBox, $DLbar, $Footer])
 
 render()
 
