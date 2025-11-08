@@ -9,6 +9,10 @@
   "author": "FedYou",
   "license": "MIT",
   "devDependencies": {
+    "@types/blessed": "^0.1.25",
     "@types/node": "^24.10.0"
+  },
+  "dependencies": {
+    "blessed": "^0.1.81"
   }
 }
