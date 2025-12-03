@@ -48,7 +48,7 @@ interface Data {
 class Selector {
   // Variables
   private ui: Ui
-  private visible: boolean = true
+  private visible: boolean = false
   private data: Data | undefined
   private radio: Radio = {
     metadata: false,
@@ -98,6 +98,7 @@ class Selector {
       width: '75%',
       height: '0%+16',
       border: 'line',
+      hidden: true,
       tags: true,
       style: {
         fg: 'cyan',
