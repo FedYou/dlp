@@ -49,7 +49,7 @@ class Selector {
   // Variables
   private ui: Ui
   private visible: boolean = false
-  private data: Data | undefined
+  private data: Data | null = null
   private radio: Radio = {
     metadata: false,
     miniature: false
@@ -476,7 +476,6 @@ class Selector {
   private showHide(visible: boolean) {
     this.visible = visible
     this.ui.box.hidden = !this.ui.box.hidden
-    this.dataSelected = null
     render()
   }
 
@@ -486,6 +485,11 @@ class Selector {
 
   hide() {
     this.showHide(false)
+  }
+
+  clearData() {
+    this.data = null
+    this.dataSelected = null
   }
 
   // Establecer la posicion del elemento box
