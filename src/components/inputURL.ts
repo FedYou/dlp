@@ -1,0 +1,159 @@
+import blessed from 'blessed'
+import { screen, render } from 'global/screen'
+
+enum LABEL {
+  INPUT_URL_TOP = 'URL',
+  INPUT_URL_BOTTOM = '[x] Insert URL - [d] Start download',
+  INPUT_URL_MESSAGE = 'Insert a valid URL',
+  INPUT_URL_INVALID = 'Invalid URL',
+  INPUT_URL_VALID = 'Valid URL',
+  INPUT_URL_VOID = 'Without URL'
+}
+
+interface Ui {
+  input: blessed.Widgets.TextboxElement
+  message: blessed.Widgets.TextElement
+  status: blessed.Widgets.TextElement
+}
+
+export default class InputURL {
+  private ui: Ui
+
+  private _value: string | null = null
+  private visible: boolean = false
+
+  constructor(parent: blessed.Widgets.BoxElement) {
+    this.ui = {
+      input: this.createInput(parent),
+      message: null as any,
+      status: null as any
+    }
+    this.ui.message = this.createMessage()
+    this.ui.status = this.createStatus()
+
+    screen.on('resize', () => this.update())
+
+    screen.on('keypress', (_, key) => {
+      if (key.full === 'd') {
+        this.hide()
+      }
+    })
+  }
+
+  // Actualizar la ui
+
+  update() {
+    if (!this.visible) return
+
+    this.ui.input.setLabel(LABEL.INPUT_URL_TOP)
+    this.ui.message.setContent(LABEL.INPUT_URL_MESSAGE)
+
+    if (this._value === null) {
+      this.ui.input.value = LABEL.INPUT_URL_VOID
+    } else {
+      this.ui.input.value = this._value
+    }
+
+    this.ui.message.left = `center`
+    this.ui.status.left = `center`
+
+    render()
+  }
+
+  // ---------------------------------------------
+  // Crear elementos de la ui
+  // ---------------------------------------------
+  private createInput(parent: blessed.Widgets.BoxElement): blessed.Widgets.TextboxElement {
+    return blessed.textbox({
+      parent,
+      top: '50%',
+      left: 'center',
+      width: '50%',
+      height: 3,
+      border: 'line',
+      hidden: true,
+      style: {
+        fg: 'white',
+        border: {
+          fg: 'yellow'
+        },
+        label: {
+          fg: 'yellow',
+          bold: true
+        }
+      }
+    })
+  }
+
+  private createMessage(): blessed.Widgets.TextElement {
+    return blessed.text({
+      parent: this.ui.input,
+      top: '50%',
+      width: 'shrink',
+      height: '5%',
+      style: {
+        fg: 'yellow'
+      }
+    })
+  }
+
+  private createStatus(): blessed.Widgets.TextElement {
+    return blessed.text({
+      parent: this.ui.input,
+      top: '50%+2',
+      width: 'shrink',
+      height: '5%'
+    })
+  }
+
+  // ---------------------------------------------
+  // ---------------------------------------------
+
+  setStatus(type: 'invalid' | 'valid' | null) {
+    if (type === 'invalid') {
+      this.ui.status.setContent(LABEL.INPUT_URL_INVALID)
+      this.ui.status.style.fg = 'red'
+      return
+    }
+    if (type === 'valid') {
+      this.ui.status.setContent(LABEL.INPUT_URL_VALID)
+      this.ui.status.style.fg = 'green'
+      return
+    }
+
+    this.ui.status.setContent('')
+    this.ui.status.style.fg = 'white'
+  }
+
+  set value(value: string | null) {
+    this._value = value
+    this.update()
+  }
+
+  get value() {
+    return this._value
+  }
+  private showHide(visible: boolean) {
+    this.visible = visible
+    this.ui.input.hidden = !this.ui.input.hidden
+    this.update()
+  }
+
+  show() {
+    this.showHide(true)
+  }
+
+  hide() {
+    this.showHide(false)
+  }
+
+  setPosition(top: string, left: string) {
+    this.ui.input.top = top
+    this.ui.input.left = left
+    render()
+  }
+
+  get element() {
+    return this.ui.input
+  }
+}
