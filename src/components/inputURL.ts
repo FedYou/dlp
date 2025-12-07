@@ -46,7 +46,6 @@ export default class InputURL {
     if (!this._visible) return
 
     this.ui.input.setLabel(LABEL.INPUT_URL_TOP)
-    this.ui.message.setContent(LABEL.INPUT_URL_MESSAGE)
 
     if (this._value === null) {
       this.ui.input.value = LABEL.INPUT_URL_VOID
@@ -54,7 +53,7 @@ export default class InputURL {
       this.ui.input.value = this._value
     }
 
-    this.ui.message.left = `center`
+    this.ui.message.left = `50%-${Math.floor(LABEL.INPUT_URL_BOTTOM.length / 1.8)}`
     this.ui.status.left = `center`
 
     render()
@@ -91,6 +90,7 @@ export default class InputURL {
       top: '50%',
       width: 'shrink',
       height: '5%',
+      content: LABEL.INPUT_URL_BOTTOM,
       style: {
         fg: 'yellow'
       }
