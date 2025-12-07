@@ -20,7 +20,7 @@ export default class InputURL {
   private ui: Ui
 
   private _value: string | null = null
-  private visible: boolean = false
+  private _visible: boolean = false
 
   constructor(parent: blessed.Widgets.BoxElement) {
     this.ui = {
@@ -35,7 +35,7 @@ export default class InputURL {
 
     screen.on('keypress', (_, key) => {
       if (key.full === 'd') {
-        this.hide()
+        this.visible = false
       }
     })
   }
@@ -43,7 +43,7 @@ export default class InputURL {
   // Actualizar la ui
 
   update() {
-    if (!this.visible) return
+    if (!this._visible) return
 
     this.ui.input.setLabel(LABEL.INPUT_URL_TOP)
     this.ui.message.setContent(LABEL.INPUT_URL_MESSAGE)
@@ -133,18 +133,11 @@ export default class InputURL {
   get value() {
     return this._value
   }
-  private showHide(visible: boolean) {
-    this.visible = visible
-    this.ui.input.hidden = !this.ui.input.hidden
+
+  set visible(visible: boolean) {
+    this._visible = visible
+    this.ui.input.hidden = !this._visible
     this.update()
-  }
-
-  show() {
-    this.showHide(true)
-  }
-
-  hide() {
-    this.showHide(false)
   }
 
   setPosition(top: string, left: string) {

@@ -48,7 +48,7 @@ interface Data {
 class Selector {
   // Variables
   private ui: Ui
-  private visible: boolean = false
+  private _visible: boolean = false
   private data: Data | null = null
   private radio: Radio = {
     metadata: false,
@@ -77,7 +77,7 @@ class Selector {
   // Actualizar la ui
 
   update() {
-    if (!this.visible) {
+    if (!this._visible) {
       render()
       return
     }
@@ -269,13 +269,13 @@ class Selector {
 
   private createkeyboardBindings() {
     const bindings = {
-      'c,C,d,D': () => this.hide(),
+      'c,C,d,D': () => (this.visible = false),
       'e,E': () => this.toggleRadio('metadata'),
       'i,I': () => this.toggleRadio('miniature'),
       's,S': () => this.openCloseList()
     }
     screen.on('keypress', (_, key) => {
-      if (!this.visible) return
+      if (!this._visible) return
 
       for (const binding in bindings) {
         const keys = binding.includes(',') ? binding.split(',') : binding
@@ -473,18 +473,10 @@ class Selector {
     return this.ui.box.width as number
   }
 
-  private showHide(visible: boolean) {
-    this.visible = visible
-    this.ui.box.hidden = !this.ui.box.hidden
+  set visible(visible: boolean) {
+    this._visible = visible
+    this.ui.box.hidden = !this.visible
     render()
-  }
-
-  show() {
-    this.showHide(true)
-  }
-
-  hide() {
-    this.showHide(false)
   }
 
   clearData() {

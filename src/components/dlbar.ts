@@ -35,7 +35,7 @@ export default class ProgressBar {
   }
 
   private ui: Ui
-  private visible: boolean = false
+  private _visible: boolean = false
 
   private _progress: Progress | null = null
   private _type: 'video' | 'audio' | 'thumbnail' | null = null
@@ -57,7 +57,7 @@ export default class ProgressBar {
   // Actualizar la ui
 
   update() {
-    if (!this.visible || this._progress === null) return
+    if (!this._visible || this._progress === null) return
 
     const progress = this._progress.progress
     this.ui.bar.setContent(this.buildBar(progress))
@@ -168,21 +168,14 @@ export default class ProgressBar {
     render()
   }
 
-  private showHide(visible: boolean) {
-    this.visible = visible
-    this.ui.bar.hidden = !this.ui.bar.hidden
+  set visible(visible: boolean) {
+    this._visible = visible
+    this.ui.bar.hidden = !this._visible
+    if (!this._visible) {
+      this._progress = null
+      this._type = null
+    }
     render()
-  }
-
-  show() {
-    this.showHide(true)
-    this.update()
-  }
-
-  hide() {
-    this.showHide(false)
-    this._progress = null
-    this._type = null
   }
 
   setPosition(top: string, left: string) {
