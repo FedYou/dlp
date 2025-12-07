@@ -475,7 +475,7 @@ class Selector {
 
   set visible(visible: boolean) {
     this._visible = visible
-    this.ui.box.hidden = !this.visible
+    this.ui.box.hidden = !this._visible
     render()
   }
 
