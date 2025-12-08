@@ -1,6 +1,6 @@
 import type { DataOptions } from './media'
 import type { VideoInfo, DependenciesStatus, Status, CacheStats } from './any'
-import type { FormatVideoDefault, FormatAudioDefault, FormatVideoYT, FormatAudioYT } from './json'
+import type { FormatVideo, FormatAudio, FormatAudioLanguages } from './json'
 
 interface SaveMediaOptions {
   dir: string
@@ -27,14 +27,9 @@ export declare class DLP {
   get status(): Status
   get info(): VideoInfo
   get formats(): {
-    audio?:
-      | FormatAudioDefault[]
-      | FormatAudioYT
-      | FormatAudioDefault
-      | { [key: string]: FormatAudioYT[] }
-      | null
-    mp4: FormatVideoDefault[] | FormatVideoYT[]
-    webm?: FormatVideoYT[] | null
+    audio: FormatAudio | FormatAudioLanguages | boolean
+    mp4: FormatVideo[]
+    webm?: FormatVideo[] | null
   }
   isAudioAvailable(): boolean
 }

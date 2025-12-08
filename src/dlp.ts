@@ -13,7 +13,7 @@ import getSize from 'utils/getSize'
 import type { DataOptions, MediaDownloadOn, MediaProcessOn } from 'types/media'
 import type { FileDownloadProgress } from 'types/dlf'
 import type { VideoInfo, Metadata, Status } from 'types/any'
-import type { FormatVideoDefault, FormatAudioDefault, FormatVideoYT, FormatAudioYT } from 'types/json'
+import type { FormatVideo, FormatAudio, FormatAudioLanguages } from 'types/json'
 
 export default class DLP {
   private url: any
@@ -249,14 +249,9 @@ export default class DLP {
   }
 
   get formats(): {
-    audio?:
-      | FormatAudioDefault[]
-      | FormatAudioYT
-      | FormatAudioDefault
-      | { [key: string]: FormatAudioYT[] }
-      | null
-    mp4: FormatVideoDefault[] | FormatVideoYT[]
-    webm?: FormatVideoYT[] | null
+    audio: FormatAudio | FormatAudioLanguages | boolean
+    mp4: FormatVideo[]
+    webm: FormatVideo | null
   } {
     if (!this.json) this.setErrorNoJSON()
     return this.json.formats
@@ -264,7 +259,7 @@ export default class DLP {
 
   isAudioAvailable(): boolean {
     if (!this.json) this.setErrorNoJSON()
-    return this.json.formats.audio !== null
+    return this.json.formats.audio
   }
 
   private getMetadata(): Metadata {

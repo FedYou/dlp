@@ -1,78 +1,47 @@
-export interface FormatVideoDefault {
+export interface FormatVideo {
   ext: string
   filesize: string
-  vcodec: string
+  codec: string
   resolution: string
+  resolution_note: string
+  /** Youtube */
+  fps?: string
   url: string
 }
 
-export interface FormatAudioDefault {
+export interface FormatAudio {
   ext: string
   filesize: string
   abr: string
-  acodec: string
+  codec: string
+  language?: string
   url: string
 }
 
-export interface FormatVideoYT extends FormatVideoDefault {
-  fps: string
-  format: string
+export interface FormatAudioLanguages {
+  [key: string]: FormatAudio[]
 }
 
-export interface FormatAudioYT extends FormatAudioDefault {
-  language: string
-  format_id: string
-  format_note: string
-}
-
-export interface JSONIG {
-  platform: 'instagram'
+export interface JSON {
+  platform: 'youtube' | 'instagram' | 'tiktok'
   title: string
   uploader: string
   description: string
   upload_date: string
   duration: string
   thumbnail: string
+  /** Youtube */
+  language?: string
+  /** Youtube */
+  views?: string
+  /** Tiktok */
+  cookies?: string
+  /** Tiktok */
+  referer?: string
   id: string
   formats: {
-    audio: FormatAudioDefault | null
-    mp4: FormatVideoDefault[]
-  }
-}
-
-export interface JSONYT {
-  platform: 'youtube'
-  language: string
-  title: string
-  uploader: string
-  description: string
-  upload_date: string
-  duration: string
-  thumbnail: string
-  id: string
-  views: string
-  formats: {
-    mp4: FormatVideoYT[]
-    webm: FormatVideoYT[] | null
-    audio: {
-      [key: string]: FormatAudioYT[]
-    } | null
-  }
-}
-
-export interface JSONTK {
-  platform: 'tiktok'
-  title: string
-  uploader: string
-  description: string
-  upload_date: string
-  duration: string
-  thumbnail: string
-  cookies: string
-  referer: string
-  id: string
-  formats: {
-    mp4: FormatVideoDefault[]
-    audio: true | null
+    audio: FormatAudio | FormatAudioLanguages | boolean
+    mp4: FormatVideo[]
+    webm: FormatVideo | null
   }
 }

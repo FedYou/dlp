@@ -4,38 +4,41 @@ import getDate from 'utils/getDate'
 // --- Types ------------------
 // ----------------------------
 
-import type { JSONIG, FormatVideoDefault, FormatAudioDefault } from 'types/json'
+import type { JSON, FormatVideo, FormatAudio } from 'types/json'
 
 // ----------------------------
 // --- Functions --------------
 // ----------------------------
 
-function formatVideo(format: any): FormatVideoDefault {
+function formatVideo(format: any): FormatVideo {
   return {
     ext: format.ext,
     filesize: format.filesize_approx,
-    vcodec: format.vcodec,
-    resolution: format.resolution.split('x')[0] + 'p',
+    codec: format.vcodec,
+    resolution: format.resolution,
+    resolution_note: format.resolution.split('x')[0] + 'p',
     url: format.url
   }
 }
 
-function formatAudio(format: any): FormatAudioDefault {
+function formatAudio(format: any): FormatAudio {
   return {
     ext: format.ext,
     filesize: format.filesize_approx,
     abr: format.abr,
-    acodec: format.acodec,
+    codec: format.acodec,
     url: format.url
   }
 }
-export default function (json: any): JSONIG {
+export default function (json: any): JSON {
   const formats: {
-    audio: FormatAudioDefault | null
-    mp4: FormatVideoDefault[]
+    mp4: FormatVideo[]
+    webm: null
+    audio: FormatAudio | boolean
   } = {
-    audio: null,
-    mp4: []
+    mp4: [],
+    webm: null,
+    audio: false
   }
 
   json.formats.forEach((format: any) => {

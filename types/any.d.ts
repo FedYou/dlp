@@ -9,7 +9,9 @@ export interface VideoInfo {
   thumbnail: string
   id: string
   platform: string
+  /** Youtube */
   views?: string
+  /** Youtube */
   language?: string
 }
 

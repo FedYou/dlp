@@ -83,22 +83,27 @@ function toFormatDependency(version: string | null): DependencyStatusFormat {
 }
 
 async function status(): Promise<DependenciesStatus> {
-  const ytdlp = toFormatDependency(await getVersion('yt-dlp'))
+  const list = {
+    ytdlp: {} as any,
+    ffmpeg: null as any,
+    deno: null as any,
+    aria2: null as any
+  }
 
-  ytdlp.lastest = await isLastVersionYTDLP(ytdlp.version)
-
-  const ffmpeg = toFormatDependency(await getVersion('ffmpeg'))
-  const deno = toFormatDependency(await getVersion('deno'))
-  const aria2 = toFormatDependency(await getVersion('aria2'))
+  await Promise.all([
+    getVersion('yt-dlp').then(
+      (version) => (list.ytdlp = { ...toFormatDependency(version), ...list.ytdlp })
+    ),
+    isLastVersionYTDLP(list.ytdlp.version).then((lastest) => (list.ytdlp.lastest = lastest)),
+    getVersion('ffmpeg').then((version) => (list.ffmpeg = toFormatDependency(version))),
+    getVersion('deno').then((version) => (list.deno = toFormatDependency(version))),
+    getVersion('aria2').then((version) => (list.aria2 = toFormatDependency(version)))
+  ])
 
   return {
-    'all-installed': ytdlp.installed && ffmpeg.installed && deno.installed && aria2.installed,
-    list: {
-      ytdlp,
-      ffmpeg: ffmpeg,
-      deno: deno,
-      aria2: aria2
-    }
+    'all-installed':
+      list.ytdlp.installed && list.ffmpeg.installed && list.deno.installed && list.aria2.installed,
+    list
   }
 }
 
