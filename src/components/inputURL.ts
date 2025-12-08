@@ -113,16 +113,19 @@ export default class InputURL {
     if (type === 'invalid') {
       this.ui.status.setContent(LABEL.INPUT_URL_INVALID)
       this.ui.status.style.fg = 'red'
+      this.update()
       return
     }
     if (type === 'valid') {
       this.ui.status.setContent(LABEL.INPUT_URL_VALID)
       this.ui.status.style.fg = 'green'
+      this.update()
       return
     }
 
     this.ui.status.setContent('')
     this.ui.status.style.fg = 'white'
+    this.update()
   }
 
   set value(value: string | null) {
