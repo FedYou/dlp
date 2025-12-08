@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "blessed": "^0.1.81",
+    "clipboardy": "^5.0.1",
     "dlp-core": "workspace:*"
   }
 }
