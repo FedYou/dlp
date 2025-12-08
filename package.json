@@ -7,6 +7,9 @@
   "bin": {
     "dlp": "./bin/dlp"
   },
+  "scripts": {
+    "pull:core": "git subtree pull --prefix=core/ https://github.com/FedYou/dlp-core main --squash"
+  },
   "author": "FedYou",
   "license": "MIT",
   "workspaces": [
