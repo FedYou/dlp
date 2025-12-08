@@ -24,8 +24,8 @@ interface Radio {
   miniature: boolean
 }
 
-interface DataSelected {
-  format: string
+export interface Selected {
+  format: 'mp4' | 'mp4-audio' | 'webm' | 'webm-audio' | 'audio'
   quality: number
   language: number
 }
@@ -54,7 +54,7 @@ class Selector {
     metadata: false,
     miniature: false
   }
-  private dataSelected: DataSelected | null = null
+  private selected: Selected | null = null
 
   private _onSelect: (index: number) => void = () => {}
 
@@ -230,10 +230,10 @@ class Selector {
   }
 
   private buildButtonContent(): string {
-    if (this.dataSelected === null) {
+    if (this.selected === null) {
       return LABELS.SELECT_BT
     }
-    const { format, language, quality } = this.dataSelected
+    const { format, language, quality } = this.selected
 
     if (format.includes('-audio')) {
       const _format = format.split('-')[0] as 'mp4' | 'webm'
@@ -306,7 +306,7 @@ class Selector {
       if (platform === 'tiktok') {
         const _format = formats.audio ? 'mp4-audio' : 'mp4'
 
-        this.dataSelected = { format: _format, quality: itemIndex, language: -1 }
+        this.selected = { format: _format, quality: itemIndex, language: -1 }
 
         this.hideList()
         return
@@ -322,25 +322,25 @@ class Selector {
         // Guarda la seleccion de formato, calidad y idioma
         // Solo si es un video con audio con mas de un idioma
         if (format.includes('-audio') && qualityIndex !== undefined && Array.isArray(formats.audio)) {
-          this.dataSelected = { format, quality: qualityIndex, language: itemIndex }
+          this.selected = { format, quality: qualityIndex, language: itemIndex }
         }
 
         // Si el video tiene audio pero no mas de un idioma
         if (format.includes('-audio') && qualityIndex === undefined) {
-          this.dataSelected = { format, quality: itemIndex, language: -1 }
+          this.selected = { format, quality: itemIndex, language: -1 }
         }
 
         if (format === 'audio' && Array.isArray(formats.audio)) {
-          this.dataSelected = { format, quality: -1, language: itemIndex }
+          this.selected = { format, quality: -1, language: itemIndex }
         }
 
         if (format === 'audio' && !Array.isArray(formats.audio)) {
-          this.dataSelected = { format, quality: -1, language: -1 }
+          this.selected = { format, quality: -1, language: -1 }
         }
 
         // Si es un video sin audio
         if (!format.includes('-audio') && format !== 'audio') {
-          this.dataSelected = { format, quality: itemIndex, language: -1 }
+          this.selected = { format, quality: itemIndex, language: -1 }
         }
 
         this.hideList()
@@ -365,7 +365,7 @@ class Selector {
           this.setItems('audio')
           return
         }
-        this.dataSelected = { format: 'audio', quality: -1, language: -1 }
+        this.selected = { format: 'audio', quality: -1, language: -1 }
 
         this.hideList()
       }
@@ -481,7 +481,17 @@ class Selector {
 
   clearData() {
     this.data = null
-    this.dataSelected = null
+    this.selected = null
+    this.ui.list.clearItems()
+    this.ui.button.setContent(Style(this.buildButtonContent())('center') + '')
+  }
+
+  getSelected(): Selected | null {
+    return this.selected
+  }
+
+  getRadio(): Radio {
+    return this.radio
   }
 
   // Establecer la posicion del elemento box
