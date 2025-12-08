@@ -2,14 +2,14 @@ import youfile from 'youfile'
 import sha256 from 'utils/sha256'
 import cache from 'global/cache'
 import existsCache from 'utils/existsCache'
-import type { JSONIG, JSONTK, JSONYT } from 'types/json'
+import type { JSON } from 'types/json'
 // ----------------------------
 // --- Types ------------------
 // ----------------------------
 
 import type { DataOptions } from 'types/media'
 
-interface JSON {
+interface JSONResult {
   NAMES: {
     onlyVideo: string
     onlyAudio: string
@@ -42,13 +42,15 @@ function resolveCache(fileName: string) {
   return cache.path + '/' + fileName
 }
 
-export default function (json: JSONIG | JSONTK | JSONYT, options: DataOptions): JSON {
+export default function (json: JSON, options: DataOptions): JSONResult {
   const { platform, id, formats } = json
   const { type, vformat, vquality } = options
   let language: string
 
   if (platform === 'youtube' && formats.audio) {
-    language = (formats as any).audio[options?.language as string] ?? formats.audio[json.language]
+    language =
+      (formats as any).audio[options?.language as string] ??
+      (formats as any).audio[(json as any).language]
   } else {
     language = ''
   }
@@ -56,7 +58,7 @@ export default function (json: JSONIG | JSONTK | JSONYT, options: DataOptions): 
   const key = sha256('keys' + platform + id + type + vformat + vquality + language)
 
   if (existsCache(key)) {
-    return youfile.read.jsonSync(resolveCache(key)) as JSON
+    return youfile.read.jsonSync(resolveCache(key)) as JSONResult
   }
 
   const NAMES = {

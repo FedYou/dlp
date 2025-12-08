@@ -3,7 +3,7 @@ import getDate from 'utils/getDate'
 // ----------------------------
 // --- Types ------------------
 // ----------------------------
-import type { JSONYT, FormatVideoYT, FormatAudioYT } from 'types/json'
+import type { JSON, FormatVideo, FormatAudio } from 'types/json'
 
 // ----------------------------
 // --- Variables --------------
@@ -15,28 +15,26 @@ const FORMAT_NOTE_VIDEO = /\b\d{3,4}p\d*(?:\s*\(\d+\))?\b/
 // --- Functions --------------
 // ----------------------------
 
-function formatVideo(format: any): FormatVideoYT {
+function formatVideo(format: any): FormatVideo {
   return {
     ext: format.ext,
     filesize: format.filesize_approx,
-    vcodec: format.vcodec,
+    codec: format.vcodec,
     fps: format.fps,
     resolution: format.resolution,
-    format: format.format_note,
+    resolution_note: format.format_note,
     url: format.url
   }
 }
 
-function formatAudio(format: any): FormatAudioYT {
+function formatAudio(format: any): FormatAudio {
   return {
     language: format.language,
     ext: format.ext,
     filesize: format.filesize_approx,
     abr: format.abr,
-    acodec: format.acodec,
-    url: format.url,
-    format_id: format.format_id,
-    format_note: format.format_note
+    codec: format.acodec,
+    url: format.url
   }
 }
 
@@ -54,7 +52,7 @@ function betterAudio(audios: any[]) {
   return best
 }
 
-export default function (json: any): JSONYT {
+export default function (json: any): JSON {
   const formats = {
     mp4: [] as any,
     webm: null as any,

@@ -1,5 +1,5 @@
 import type { FileDownloadProgress } from './dlf'
-import type { JSONIG, JSONTK, JSONYT } from './json'
+import type { JSON } from './json'
 export interface DataOptions {
   /**
    * Type
@@ -23,7 +23,7 @@ export interface MediaDownloadOn {
 }
 
 export interface MediaDownloadOptions {
-  json: JSONIG | JSONTK | JSONYT
+  json: JSON
   options: DataOptions
   on?: MediaDownloadOn
 }
@@ -34,7 +34,7 @@ interface MediaProcessOn {
 }
 
 export interface MediaProcessOptions {
-  json: JSONIG | JSONTK | JSONYT
+  json: JSON
   options: DataOptions
   on?: MediaProcessOn
 }

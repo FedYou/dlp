@@ -4,29 +4,32 @@ import getDate from 'utils/getDate'
 // --- Types ------------------
 // ----------------------------
 
-import type { JSONTK, FormatVideoDefault } from 'types/json'
+import type { JSON, FormatVideo } from 'types/json'
 
 // ----------------------------
 // --- Functions --------------
 // ----------------------------
 
-function formatVideo(format: any): FormatVideoDefault {
+function formatVideo(format: any): FormatVideo {
   return {
     ext: format.ext,
     filesize: format.filesize,
-    vcodec: format.vcodec,
-    resolution: format.resolution.split('x')[0] + 'p',
+    codec: format.vcodec,
+    resolution: format.resolution,
+    resolution_note: format.resolution.split('x')[0] + 'p',
     url: format.url
   }
 }
 
-export default function (json: any): JSONTK {
+export default function (json: any): JSON {
   const formats: {
-    mp4: FormatVideoDefault[]
-    audio: true | null
+    mp4: FormatVideo[]
+    webm: null
+    audio: boolean
   } = {
     mp4: [],
-    audio: null
+    webm: null,
+    audio: false
   }
 
   if (json.acodec === 'aac') formats.audio = true
