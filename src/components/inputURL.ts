@@ -21,6 +21,7 @@ export default class InputURL {
 
   private _value: string | null = null
   private _visible: boolean = false
+  private _status: 'invalid' | 'valid' | null = null
 
   constructor(parent: blessed.Widgets.BoxElement) {
     this.ui = {
@@ -34,7 +35,7 @@ export default class InputURL {
     screen.on('resize', () => this.update())
 
     screen.on('keypress', (_, key) => {
-      if (key.full === 'd') {
+      if (key.full === 'd' && this._status === 'valid') {
         this.visible = false
       }
     })
@@ -43,8 +44,10 @@ export default class InputURL {
   // Actualizar la ui
 
   update() {
-    if (!this._visible) return
-
+    if (!this._visible) {
+      render()
+      return
+    }
     this.ui.input.setLabel(LABEL.INPUT_URL_TOP)
 
     if (this._value === null) {
@@ -109,16 +112,18 @@ export default class InputURL {
   // ---------------------------------------------
   // ---------------------------------------------
 
-  setStatus(type: 'invalid' | 'valid' | null) {
+  set status(type: 'invalid' | 'valid' | null) {
     if (type === 'invalid') {
       this.ui.status.setContent(LABEL.INPUT_URL_INVALID)
       this.ui.status.style.fg = 'red'
+      this._status = type
       this.update()
       return
     }
     if (type === 'valid') {
       this.ui.status.setContent(LABEL.INPUT_URL_VALID)
       this.ui.status.style.fg = 'green'
+      this._status = type
       this.update()
       return
     }
@@ -126,6 +131,10 @@ export default class InputURL {
     this.ui.status.setContent('')
     this.ui.status.style.fg = 'white'
     this.update()
+  }
+
+  get status() {
+    return this._status
   }
 
   set value(value: string | null) {
