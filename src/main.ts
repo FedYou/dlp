@@ -1,7 +1,7 @@
 import './stopExec'
 import DLP from './dlp'
 import Cache from './cache'
-import Dependecies from './dependecies'
+import Dependencies from './dependencies'
 
-export { DLP, Dependecies, Cache }
-export default { DLP, Dependecies, Cache }
+export { DLP, Dependencies, Cache }
+export default { DLP, Dependencies, Cache }

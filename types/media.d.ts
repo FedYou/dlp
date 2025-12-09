@@ -28,13 +28,7 @@ export interface MediaDownloadOptions {
   on?: MediaDownloadOn
 }
 
-interface MediaProcessOn {
-  start: (type: 'video' | 'audio' | 'thumbnail') => void
-  complete: (type: 'video' | 'audio' | 'thumbnail', code: number) => void
-}
-
 export interface MediaProcessOptions {
   json: JSON
   options: DataOptions
-  on?: MediaProcessOn
 }
