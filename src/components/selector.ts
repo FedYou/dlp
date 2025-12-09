@@ -71,6 +71,7 @@ class Selector {
 
     this.ui.list.on('select', (_, i) => this.onSelect?.(i))
 
+    screen.on('resize', () => this.update())
     this.update()
   }
 
@@ -184,7 +185,7 @@ class Selector {
 
     const _description = {
       label: LABELS.DESCRIPTION,
-      text: description,
+      text: description.includes('\n') ? description.replace(/\n/g, Space(2)) : description,
       underline: false,
       width: this.boxWidth
     }
