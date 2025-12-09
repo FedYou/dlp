@@ -189,7 +189,7 @@ class Controller {
 
     if (data.platform === 'instagram' && this.dlp.isAudioAvailable()) {
       data.formats.audio = `mp3 (${getSize((formats as any).audio.filesize) ?? 0})`
-    } else {
+    } else if (data.platform !== 'youtube') {
       data.formats.audio = this.dlp.isAudioAvailable()
     }
 
@@ -269,13 +269,13 @@ class Controller {
     clearInterval(status)
     this.ui.dlbar.visible = false
     this.mode = 'process'
-    this.processMode(data)
+    await this.processMode(data)
   }
 
   private async processMode(data: OptionsMedia) {
     if (this.mode !== 'process') return
-    this.ui.dialog.content = Style('Processing...')('green-fg') + ''
     this.ui.dialog.visible = true
+    this.ui.dialog.content = Style('Processing...')('green-fg') + ''
     this.ui.status.type('processing')
 
     const radio = this.ui.selector.getRadio()
