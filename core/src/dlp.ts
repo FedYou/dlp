@@ -10,7 +10,7 @@ import toJSONTK from 'lib/json/toTiktok'
 import platformURL from 'utils/platformURL'
 import getSize from 'utils/getSize'
 
-import type { DataOptions, MediaDownloadOn } from 'types/media'
+import type { DataOptions, MediaDownloadOn, MediaProcess } from 'types/media'
 import type { FileDownloadProgress } from 'types/dlf'
 import type { VideoInfo, Metadata, DownloadStatus } from 'types/any'
 import type { FormatVideo, FormatAudio, FormatAudioLanguages } from 'types/json'
@@ -95,7 +95,6 @@ export default class DLP {
     }
 
     await downloadMedia({ json: this.json, options, on: this.onDownload() })
-    this.output = await processMedia({ json: this.json, options })
   }
 
   getMediaSizeTotal({ type, vformat, vquality, language }: DataOptions) {
@@ -137,6 +136,12 @@ export default class DLP {
       this._downloadStatus.progress = data
     }
     return { complete, progress, start }
+  }
+
+  async processMedia(options: DataOptions): Promise<MediaProcess> {
+    if (!this.json) this.setErrorNoJSON()
+    this.output = await processMedia({ json: this.json, options })
+    return this.output
   }
 
   async saveMedia({

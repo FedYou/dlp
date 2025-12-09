@@ -32,3 +32,10 @@ export interface MediaProcessOptions {
   json: JSON
   options: DataOptions
 }
+
+export interface MediaProcess {
+  path: string
+  cover: string
+  type: 'video' | 'audio'
+  format: 'mp4' | 'webm' | 'mp3'
+}
