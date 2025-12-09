@@ -1,3 +1,4 @@
+import './commands'
 import './stopExec'
 import blessed from 'blessed'
 import core from 'dlp-core'
