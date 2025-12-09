@@ -10,9 +10,9 @@ import toJSONTK from 'lib/json/toTiktok'
 import platformURL from 'utils/platformURL'
 import getSize from 'utils/getSize'
 
-import type { DataOptions, MediaDownloadOn, MediaProcessOn } from 'types/media'
+import type { DataOptions, MediaDownloadOn } from 'types/media'
 import type { FileDownloadProgress } from 'types/dlf'
-import type { VideoInfo, Metadata, Status } from 'types/any'
+import type { VideoInfo, Metadata, DownloadStatus } from 'types/any'
 import type { FormatVideo, FormatAudio, FormatAudioLanguages } from 'types/json'
 
 export default class DLP {
@@ -21,25 +21,14 @@ export default class DLP {
   private json: any
   private platform: any
   private output: any
-  private _status: Status = {
-    status: 'ready',
+  private _downloadStatus: DownloadStatus = {
     type: 'none',
-    download: {
+    progress: {
       progress: 0,
       speed: '---',
       eta: '---',
       byDownload: '---',
       downloaded: '---'
-    },
-    downloaded: {
-      audio: false,
-      video: false,
-      thumbnail: false
-    },
-    processed: {
-      audio: false,
-      video: false,
-      thumbnail: false
     }
   }
 
@@ -57,11 +46,7 @@ export default class DLP {
     }
 
     if (this.output) this.output = ''
-    this._status.status = 'JSON'
-    this._status.type = 'json'
     await this.getJSON()
-    this._status.status = 'JSONComplete'
-    this._status.type = 'none'
   }
 
   private async getJSON() {
@@ -110,7 +95,7 @@ export default class DLP {
     }
 
     await downloadMedia({ json: this.json, options, on: this.onDownload() })
-    this.output = await processMedia({ json: this.json, options, on: this.onProcess() })
+    this.output = await processMedia({ json: this.json, options })
   }
 
   getMediaSizeTotal({ type, vformat, vquality, language }: DataOptions) {
@@ -135,11 +120,9 @@ export default class DLP {
   }
 
   private onDownload(): MediaDownloadOn {
-    const complete = (type: 'video' | 'audio' | 'thumbnail', _: number) => {
-      this._status.status = 'downloadingComplete'
-      this._status.type = type
-      this._status.downloaded[type] = true
-      this._status.download = {
+    const complete = () => {
+      this._downloadStatus.type = 'none'
+      this._downloadStatus.progress = {
         progress: 0,
         speed: '---',
         eta: '---',
@@ -148,34 +131,12 @@ export default class DLP {
       }
     }
     const start = (type: 'video' | 'audio' | 'thumbnail') => {
-      this._status.status = 'downloadingStart'
-      this._status.type = type
-      this._status.download = {
-        progress: 0,
-        speed: '---',
-        eta: '---',
-        byDownload: '---',
-        downloaded: '---'
-      }
+      this._downloadStatus.type = type
     }
     const progress = (data: FileDownloadProgress) => {
-      this._status.status = 'downloading'
-      this._status.download = data
+      this._downloadStatus.progress = data
     }
     return { complete, progress, start }
-  }
-
-  private onProcess(): MediaProcessOn {
-    const complete = (type: 'video' | 'audio' | 'thumbnail') => {
-      this._status.status = 'processingComplete'
-      this._status.processed[type] = true
-    }
-    const start = (type: 'video' | 'audio' | 'thumbnail') => {
-      this._status.status = 'processing'
-      this._status.type = type
-    }
-
-    return { complete, start }
   }
 
   async saveMedia({
@@ -196,7 +157,6 @@ export default class DLP {
         }
       })
     }
-    this._status.status = 'saving'
     if (cover) {
       if (this.output.type === 'video' && this.output.format === 'mp4') {
         await ffmpeg.toMp4Cover({
@@ -223,11 +183,9 @@ export default class DLP {
       return
     }
     await youfile.copy(this.output.path, path.join(dir, fileName))
-    this._status.status = 'saved'
-    this._status.type = this.output.type
   }
-  get status(): Status {
-    return this._status
+  get downloadStatus(): DownloadStatus {
+    return this._downloadStatus
   }
 
   get info(): VideoInfo {
@@ -259,7 +217,7 @@ export default class DLP {
 
   isAudioAvailable(): boolean {
     if (!this.json) this.setErrorNoJSON()
-    return this.json.formats.audio
+    return this.json.formats.audio ? true : false
   }
 
   private getMetadata(): Metadata {

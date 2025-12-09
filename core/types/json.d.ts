@@ -1,18 +1,18 @@
 export interface FormatVideo {
   ext: string
-  filesize: string
+  filesize: number
   codec: string
   resolution: string
   resolution_note: string
   /** Youtube */
-  fps?: string
+  fps?: number
   url: string
 }
 
 export interface FormatAudio {
   ext: string
-  filesize: string
-  abr: string
+  filesize: number
+  abr: number
   codec: string
   language?: string
   url: string
@@ -33,7 +33,7 @@ export interface JSON {
   /** Youtube */
   language?: string
   /** Youtube */
-  views?: string
+  views?: number
   /** Tiktok */
   cookies?: string
   /** Tiktok */

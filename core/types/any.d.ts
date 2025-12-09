@@ -10,7 +10,7 @@ export interface VideoInfo {
   id: string
   platform: string
   /** Youtube */
-  views?: string
+  views?: number
   /** Youtube */
   language?: string
 }
@@ -39,30 +39,9 @@ export interface DependenciesStatus {
   list: DependenciesStatusList
 }
 
-export interface Status {
-  status:
-    | 'ready'
-    | 'JSON'
-    | 'JSONComplete'
-    | 'downloadingStart'
-    | 'downloading'
-    | 'downloadingComplete'
-    | 'processing'
-    | 'processingComplete'
-    | 'saving'
-    | 'saved'
-  type: 'video' | 'audio' | 'thumbnail' | 'json' | 'none'
-  download: FileDownloadProgress
-  downloaded: {
-    audio: boolean
-    video: boolean
-    thumbnail: boolean
-  }
-  processed: {
-    audio: boolean
-    video: boolean
-    thumbnail: boolean
-  }
+export interface DownloadStatus {
+  type: 'video' | 'audio' | 'thumbnail' | 'none'
+  progress: FileDownloadProgress
 }
 
 export interface CacheStats {
