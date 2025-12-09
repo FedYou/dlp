@@ -57,7 +57,8 @@ export default class ProgressBar {
   // Actualizar la ui
 
   update() {
-    if (!this._visible || this._progress === null) return
+    if (!this._visible) return
+    if (this._progress === null) return
 
     const progress = this._progress.progress
     this.ui.bar.setContent(this.buildBar(progress))
