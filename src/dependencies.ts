@@ -1,6 +1,10 @@
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import https from 'https'
+// @ts-ignore
+import TinyCache from 'tinycache'
+
+const cache = new TinyCache()
 
 // ----------------------------
 // --- Types ------------------
@@ -58,7 +62,7 @@ async function getVersion(type: 'yt-dlp' | 'ffmpeg' | 'deno' | 'aria2'): Promise
   return null
 }
 
-async function getVersionYTDLP(): Promise<string | null> {
+async function fetchGithubVersion(): Promise<string | null> {
   return new Promise((resolve, reject) => {
     https
       .get('https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest', (res) => {
@@ -68,6 +72,16 @@ async function getVersionYTDLP(): Promise<string | null> {
       })
       .on('error', (err) => reject(err))
   })
+}
+
+async function getVersionYTDLP() {
+  const cached = cache.get('yt-dlp')
+  if (cached) return cached
+
+  const version = await fetchGithubVersion()
+  if (version) cache.put('yt-dlp', version, 1000 * 60 * 60)
+
+  return version
 }
 
 async function isLastVersionYTDLP(version: string | null): Promise<boolean> {
