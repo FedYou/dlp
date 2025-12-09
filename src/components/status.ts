@@ -37,14 +37,12 @@ export default class Status {
     this.frames = 0
   }
 
-  set top(_: string) {
-    this.element.top = _
+  setPosition(top: string, left: string) {
+    this.element.top = top
+    this.element.left = left
     render()
   }
-  set left(_: string) {
-    this.element.left = _
-    render()
-  }
+
   type(type: 'loading' | 'success' | 'error' | 'downloading' | 'processing' | 'any') {
     this.stopSpinner()
 
