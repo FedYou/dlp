@@ -16,6 +16,7 @@ import $InputURL from 'components/inputURL'
 import $Selector, { Selected } from 'components/selector'
 import $DLbar from 'components/dlbar'
 import $Dialog from 'components/dialog'
+import $Status from 'components/status'
 
 import type { DataOptions as OptionsMedia } from 'dlp-core/types/media'
 
@@ -38,19 +39,23 @@ class Controller {
     footer: new $Footer(this.main),
     inputURL: new $InputURL(this.main),
     selector: new $Selector(this.main),
-    dlbar: new $DLbar(this.main)
+    dlbar: new $DLbar(this.main),
+    status: new $Status()
   }
 
   constructor() {
     this.ui.inputURL.setPosition('50%-2', 'center')
     this.ui.selector.setPosition('center', 'center')
     this.ui.dlbar.setPosition('center', 'center')
+    this.ui.status.setPosition('85%', 'center')
+    this.ui.status.type('any')
 
     this.main.append(this.ui.dialog.element)
     this.main.append(this.ui.footer.element)
     this.main.append(this.ui.inputURL.element)
     this.main.append(this.ui.selector.element)
     this.main.append(this.ui.dlbar.element)
+    this.main.append(this.ui.status.element)
 
     this.setkeyboardBindings()
     this.setFooter()
@@ -71,6 +76,7 @@ class Controller {
     const lines: string[] = [Style('Checking dependencies...')('cyan-fg') + '']
     this.ui.dialog.visible = true
     this.ui.dialog.content = lines.join('\n')
+    this.ui.status.type('loading')
 
     const dependencies = await core.Dependencies.status()
 
@@ -91,6 +97,7 @@ class Controller {
     if (this.mode !== 'input') return
     this.ui.inputURL.status = null
     this.ui.inputURL.visible = true
+    this.ui.status.type('any')
   }
 
   private pasteURL() {
@@ -120,6 +127,7 @@ class Controller {
     if (this.mode !== 'json') return
     this.ui.dialog.visible = true
     this.ui.dialog.content = Style('Obtaining JSON...')('green-fg') + ''
+    this.ui.status.type('loading')
 
     try {
       await this.dlp.addURL(url)
@@ -139,6 +147,7 @@ class Controller {
       this.ui.selector.visible = true
     }
     this.ui.selector.setData(this.toSelectorData())
+    this.ui.status.type('any')
   }
 
   private toSelectorData() {
@@ -248,6 +257,7 @@ class Controller {
   private async downloadMode(data: OptionsMedia) {
     if (this.mode !== 'download') return
     this.ui.dlbar.visible = true
+    this.ui.status.type('downloading')
 
     const status = setInterval(() => {
       this.ui.dlbar.setProgress(this.dlp.downloadStatus.progress)
@@ -266,6 +276,7 @@ class Controller {
     if (this.mode !== 'process') return
     this.ui.dialog.content = Style('Processing...')('green-fg') + ''
     this.ui.dialog.visible = true
+    this.ui.status.type('processing')
 
     const radio = this.ui.selector.getRadio()
     const dir = path.join(os.homedir(), 'dlp')
@@ -282,6 +293,7 @@ class Controller {
     this.mode = 'save'
     this.ui.dialog.content = Style(`Saved in ${dir}/${fileName}`)('green-fg') + ''
     this.setFooter()
+    this.ui.status.type('success')
   }
 
   private errorMode(message: string) {
@@ -289,6 +301,7 @@ class Controller {
     this.ui.dialog.visible = true
     this.ui.dialog.content = Style(message)('bold')('red-fg') + ''
     this.setFooter()
+    this.ui.status.type('error')
   }
 
   private backInputMode() {
