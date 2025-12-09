@@ -1,19 +1,23 @@
 import blessed from 'blessed'
 import core from 'dlp-core'
 import clipboard from 'clipboardy'
+import os from 'os'
+import path from 'path'
 
 import { screen, render, destroy } from 'global/screen'
 import platformURL from 'dlp-core/src/utils/platformURL'
 import getSize from 'dlp-core/src/utils/getSize'
 
 import { Style } from 'utils/baseUi'
-import TUIDependencies from './tui/dependencies'
+import TUIDependecies from './tui/dependencies'
 
 import $Footer from 'components/footer'
 import $InputURL from 'components/inputURL'
-import $Selector from 'components/selector'
+import $Selector, { Selected } from 'components/selector'
 import $DLbar from 'components/dlbar'
 import $Dialog from 'components/dialog'
+
+import type { DataOptions as OptionsMedia } from 'dlp-core/types/media'
 
 type Mode = 'dependencies' | 'input' | 'json' | 'select' | 'download' | 'process' | 'save' | 'error'
 
@@ -68,12 +72,12 @@ class Controller {
     this.ui.dialog.visible = true
     this.ui.dialog.content = lines.join('\n')
 
-    const dependencies = await core.Dependecies.status()
+    const dependencies = await core.Dependencies.status()
 
     if (!dependencies['all-installed'] || !dependencies.list.ytdlp.lastest) {
       lines.length = 0
       lines.push(Style('Fix dependencies')('bold')('red-fg') + '')
-      lines.push(TUIDependencies(dependencies))
+      lines.push(TUIDependecies(dependencies))
       this.ui.dialog.content = lines.join('\n')
       return
     }
@@ -188,7 +192,96 @@ class Controller {
       this.ui.selector.clearData()
       this.mode = 'input'
       this.inputMode()
+      this.setFooter()
     }
+  }
+
+  private startDownload() {
+    if (this.mode !== 'select') return
+    const data = this.toOptionsMedia(this.ui.selector.getSelected())
+    if (data === null) {
+      this.ui.selector.visible = true
+      return
+    }
+    this.ui.selector.clearData()
+    this.mode = 'download'
+    this.downloadMode(data)
+  }
+
+  private toOptionsMedia(selected: Selected | null): OptionsMedia | null {
+    if (selected === null) return null
+
+    const { format, quality, language } = selected
+    const info = this.dlp.info
+    const formats = this.dlp.formats
+
+    const data: OptionsMedia = {
+      type: null as any
+    }
+
+    if (format.includes('-audio')) {
+      data.type = 'video'
+      data.vquality = quality
+      data.vformat = format.split('-')[0] as 'mp4' | 'webm'
+    }
+
+    if (format === 'audio') {
+      data.type = 'onlyAudio'
+    } else if (!format.includes('-audio')) {
+      data.type = 'onlyVideo'
+      data.vquality = quality
+      data.vformat = format as 'mp4' | 'webm'
+    }
+
+    if (info.platform === 'youtube' && data.type !== 'onlyVideo') {
+      if (language === -1 && info?.language) {
+        data.language = (formats.audio as any)[info.language]
+      }
+      if (language !== -1 && Array.isArray(formats.audio)) {
+        data.language = formats.audio[language]
+      }
+    }
+
+    return data
+  }
+
+  private async downloadMode(data: OptionsMedia) {
+    if (this.mode !== 'download') return
+    this.ui.dlbar.visible = true
+
+    const status = setInterval(() => {
+      this.ui.dlbar.setProgress(this.dlp.downloadStatus.progress)
+      this.ui.dlbar.setType(this.dlp.downloadStatus.type)
+    }, 100)
+
+    await this.dlp.getMedia(data)
+
+    clearInterval(status)
+    this.ui.dlbar.visible = false
+    this.mode = 'process'
+    this.processMode(data)
+  }
+
+  private async processMode(data: OptionsMedia) {
+    if (this.mode !== 'process') return
+    this.ui.dialog.content = Style('Processing...')('green-fg') + ''
+    this.ui.dialog.visible = true
+
+    const radio = this.ui.selector.getRadio()
+    const dir = path.join(os.homedir(), 'dlp')
+    let ext = '.'
+
+    if (data.vformat) {
+      ext += data.vformat
+    } else ext += 'mp3'
+
+    const fileName = this.dlp.info.title + `[${Math.random().toString(36).slice(2)}]` + ext
+
+    await this.dlp.saveMedia({ dir, fileName, cover: radio.miniature, metadata: radio.metadata })
+
+    this.mode = 'save'
+    this.ui.dialog.content = Style(`Saved in ${dir}/${fileName}`)('green-fg') + ''
+    this.setFooter()
   }
 
   private errorMode(message: string) {
@@ -200,8 +293,11 @@ class Controller {
 
   private backInputMode() {
     if (this.mode === 'error' || this.mode === 'save') {
+      this.ui.dialog.visible = false
+      this.ui.dialog.content = ''
       this.mode = 'input'
       this.inputMode()
+      this.setFooter()
     }
   }
 
@@ -223,8 +319,11 @@ class Controller {
     screen.key(['a'], () => this.backInputMode())
     // Select Mode
     screen.key(['c'], () => this.backInputModeFromSelector())
-    screen.key(['d'], () => this.backInputModeFromSelector())
+    screen.key(['d'], () => this.startDownload())
   }
+
+  // ---------------------------------------------
+  // ---------------------------------------------
 }
 
 const controller = new Controller()

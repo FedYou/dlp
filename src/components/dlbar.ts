@@ -38,7 +38,7 @@ export default class ProgressBar {
   private _visible: boolean = false
 
   private _progress: Progress | null = null
-  private _type: 'video' | 'audio' | 'thumbnail' | null = null
+  private _type: 'video' | 'audio' | 'thumbnail' | 'none' = 'none'
 
   constructor(parent: blessed.Widgets.BoxElement) {
     this.ui = {
@@ -76,7 +76,7 @@ export default class ProgressBar {
     // Abajo al centro
     this.ui.label.bottom.left = `50%-${Math.floor(label.bottom.length / 1.8)}`
 
-    if (this._type) {
+    if (this._type !== 'none') {
       this.setLabelBar(this._type)
     }
 
@@ -173,7 +173,7 @@ export default class ProgressBar {
     this.ui.bar.hidden = !this._visible
     if (!this._visible) {
       this._progress = null
-      this._type = null
+      this._type = 'none'
     }
     render()
   }
@@ -189,7 +189,7 @@ export default class ProgressBar {
     this.update()
   }
 
-  setType(type: 'video' | 'audio' | 'thumbnail') {
+  setType(type: 'video' | 'audio' | 'thumbnail' | 'none') {
     this._type = type
     this.update()
   }
