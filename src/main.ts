@@ -1,3 +1,4 @@
+import './stopExec'
 import blessed from 'blessed'
 import core from 'dlp-core'
 import clipboard from 'clipboardy'
