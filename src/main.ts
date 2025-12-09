@@ -18,7 +18,7 @@ import $DLbar from 'components/dlbar'
 import $Dialog from 'components/dialog'
 import $Status from 'components/status'
 
-import type { DataOptions as OptionsMedia } from 'dlp-core/types/media'
+import type { DataOptions as OptionsMedia, MediaProcess } from 'dlp-core/types/media'
 
 type Mode = 'dependencies' | 'input' | 'json' | 'select' | 'download' | 'process' | 'save' | 'error'
 
@@ -278,13 +278,18 @@ class Controller {
     this.ui.dialog.content = Style('Processing...')('green-fg') + ''
     this.ui.status.type('processing')
 
+    const output = await this.dlp.processMedia(data)
+
+    this.mode = 'save'
+    this.saveMode(output)
+  }
+
+  private async saveMode(output: MediaProcess) {
+    if (this.mode !== 'save') return
+
     const radio = this.ui.selector.getRadio()
     const dir = path.join(os.homedir(), 'dlp')
-    let ext = '.'
-
-    if (data.vformat) {
-      ext += data.vformat
-    } else ext += 'mp3'
+    let ext = '.' + output.format
 
     const fileName = this.dlp.info.title + `[${Math.random().toString(36).slice(2)}]` + ext
 
