@@ -84,10 +84,22 @@ class Controller {
 
     const dependencies = await core.Dependencies.status()
 
-    if (!dependencies['all-installed'] || !dependencies.list.ytdlp.lastest) {
+    if (!dependencies['all-installed']) {
       lines.length = 0
       lines.push(Style('Fix dependencies')('bold')('red-fg') + '')
       lines.push(TUIDependecies(dependencies))
+      this.ui.dialog.content = lines.join('\n')
+      this.ui.status.type('error')
+      return
+    }
+
+    if (!dependencies.list.ytdlp.lastest) {
+      lines.length = 0
+      this.mode = 'error'
+      const message = 'It is recommended that you update yt-dlp to its latest version to avoid errors.'
+      lines.push(Style(message)('red-fg') + '')
+      lines.push(Style('If you want to continue press [a]')('bold')('green-fg') + '')
+
       this.ui.dialog.content = lines.join('\n')
       this.ui.status.type('error')
       return
