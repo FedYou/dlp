@@ -62,6 +62,8 @@ class Controller {
     this.setkeyboardBindings()
     this.setFooter()
     this.dependenciesMode()
+
+    this.ui.selector.onSelect = () => this.updateSelectorData()
   }
 
   private setFooter() {
@@ -173,6 +175,12 @@ class Controller {
       }
     }
 
+    const selected = this.ui.selector.getSelected()
+
+    if (selected) {
+      data.totalSize = this.dlp.getMediaSizeTotal(this.toOptionsMedia(selected) as any)
+    }
+
     if (data.platform === 'youtube') {
       data.formats.webm =
         formats.webm?.map(
@@ -196,6 +204,10 @@ class Controller {
     }
 
     return data
+  }
+  private updateSelectorData() {
+    if (this.mode !== 'select' && !this.ui.selector.getSelected()) return
+    this.ui.selector.setData(this.toSelectorData())
   }
 
   private backInputModeFromSelector() {
