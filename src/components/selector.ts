@@ -382,6 +382,8 @@ class Selector {
 
     // Abre la lista de calidades y idiomas de audio disponibles
     if (format) {
+      // Si el formato es audio significa que hay lenguajes para seleccionar,
+      // porque es array que se valido cuando se selecciono como formato al inicio
       if (format === 'audio' || (format.includes('-audio') && qualityIndex !== undefined)) {
         this.ui.list.setItems(formats.audio as string[])
         this.setLabelList('language')
