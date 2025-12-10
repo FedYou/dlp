@@ -89,6 +89,7 @@ class Controller {
       lines.push(Style('Fix dependencies')('bold')('red-fg') + '')
       lines.push(TUIDependecies(dependencies))
       this.ui.dialog.content = lines.join('\n')
+      this.ui.status.type('error')
       return
     }
 
