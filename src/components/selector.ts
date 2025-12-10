@@ -56,7 +56,8 @@ class Selector {
   }
   private selected: Selected | null = null
 
-  private _onSelect: (index: number) => void = () => {}
+  private _onSelectItem: (index: number) => void = () => {}
+  onSelect: () => void = () => {}
 
   constructor(parent: blessed.Widgets.BoxElement) {
     this.ui = {
@@ -69,7 +70,7 @@ class Selector {
 
     this.createkeyboardBindings()
 
-    this.ui.list.on('select', (_, i) => this.onSelect?.(i))
+    this.ui.list.on('select', (_, i) => this.onSelectItem?.(i))
 
     screen.on('resize', () => this.update())
     this.update()
@@ -303,13 +304,14 @@ class Selector {
 
     const { platform, formats, language } = this.data
 
-    this.onSelect = (itemIndex) => {
+    this.onSelectItem = (itemIndex) => {
       if (platform === 'tiktok') {
         const _format = formats.audio ? 'mp4-audio' : 'mp4'
 
         this.selected = { format: _format, quality: itemIndex, language: -1 }
 
         this.hideList()
+        this.onSelect()
         return
       }
 
@@ -345,6 +347,7 @@ class Selector {
         }
 
         this.hideList()
+        this.onSelect()
         return
       }
 
@@ -369,6 +372,7 @@ class Selector {
         this.selected = { format: 'audio', quality: -1, language: -1 }
 
         this.hideList()
+        this.onSelect()
       }
     }
 
@@ -461,12 +465,12 @@ class Selector {
     render()
   }
 
-  private set onSelect(fn: (index: number) => void) {
-    this._onSelect = fn
+  private set onSelectItem(fn: (index: number) => void) {
+    this._onSelectItem = fn
   }
 
-  private get onSelect(): (index: number) => void {
-    return this._onSelect
+  private get onSelectItem(): (index: number) => void {
+    return this._onSelectItem
   }
 
   // Obtener el ancho del elemento box
