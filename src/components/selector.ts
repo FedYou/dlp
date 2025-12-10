@@ -11,7 +11,10 @@ enum LABELS {
   CANCEL = '[c] Cancel',
   DOWNLOAD = '[d] Download',
   SELECT_BT = 'Select Format',
-  SELECT_MESSAGE = '[s] Open Selector'
+  SELECT_MESSAGE = '[s] Open Selector',
+  SELECT_FORMAT = 'Select Format',
+  SELECT_QUALITY = 'Select Quality',
+  SELECT_LANGUAGE = 'Select Language'
 }
 
 interface Ui {
@@ -142,7 +145,6 @@ class Selector {
       },
       scrollable: true,
       border: 'line',
-      label: Style('Select format')('magenta-fg') + '',
       tags: true,
       style: {
         border: {
@@ -355,12 +357,14 @@ class Selector {
       if (item.startsWith('mp4')) {
         if (item.includes('audio')) {
           this.setItems('mp4-audio')
+
           return
         }
         this.setItems('mp4')
       } else if (item.startsWith('webm')) {
         if (item.includes('audio')) {
           this.setItems('webm-audio')
+
           return
         }
         this.setItems('webm')
@@ -378,11 +382,9 @@ class Selector {
 
     // Abre la lista de calidades y idiomas de audio disponibles
     if (format) {
-      if (
-        format === 'audio' ||
-        (format.includes('-audio') && qualityIndex !== undefined && Array.isArray(formats.audio))
-      ) {
+      if (format === 'audio' || (format.includes('-audio') && qualityIndex !== undefined)) {
         this.ui.list.setItems(formats.audio as string[])
+        this.setLabelList('language')
         render()
         return
       }
@@ -394,7 +396,7 @@ class Selector {
         const _format = (format.includes(Space()) ? format.split(Space())[0] : format) as 'mp4' | 'webm'
         this.ui.list.setItems(formats[_format])
       }
-
+      this.setLabelList('quality')
       render()
       return
     }
@@ -434,6 +436,18 @@ class Selector {
 
   // ---------------------------------------------
   // ---------------------------------------------
+
+  setLabelList(type: 'format' | 'quality' | 'language') {
+    let label = LABELS.SELECT_FORMAT
+    if (type === 'quality') {
+      label = LABELS.SELECT_QUALITY
+    }
+    if (type === 'language') {
+      label = LABELS.SELECT_LANGUAGE
+    }
+    this.ui.list.setLabel(Style(label)('magenta-fg') + '')
+  }
+
   private toggleRadio(type: 'metadata' | 'miniature') {
     this.radio[type] = !this.radio[type]
     this.update()
@@ -441,6 +455,7 @@ class Selector {
 
   private openCloseList() {
     this.ui.list.focus()
+    this.setLabelList('format')
     // Se conserva el valor de hidden del ui.list
     const previousHidden = this.ui.list.hidden
     // Se cambia el valor de hidden del ui.list a lo contrario
