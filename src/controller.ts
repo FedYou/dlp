@@ -27,7 +27,6 @@ export default class Controller {
   private dlp = new core.DLP()
 
   main = blessed.box({
-    parent: screen,
     top: 'center',
     left: 'center',
     width: '100%',
