@@ -66,6 +66,10 @@ export default class Controller {
   private setFooter() {
     let content = ['[q | C-c] exit']
 
+    if (this.mode === 'input') {
+      content.push('[c] clear cache')
+    }
+
     if (this.mode === 'error' || this.mode === 'save') {
       content.push('[a] back')
     }
@@ -105,6 +109,7 @@ export default class Controller {
     this.ui.dialog.visible = false
     this.mode = 'input'
     this.inputMode()
+    this.setFooter()
   }
 
   private inputMode() {
@@ -135,6 +140,7 @@ export default class Controller {
     this.ui.inputURL.value = null
     this.mode = 'json'
     this.jsonMode(url)
+    this.setFooter()
   }
 
   private async jsonMode(url: string) {
@@ -348,12 +354,18 @@ export default class Controller {
     process.exit(0)
   }
 
+  private clearCache() {
+    if (this.mode !== 'input') return
+    core.Cache.clear()
+  }
+
   // ---------------------------------------------
   // ---------- Atajos de teclado -----------------
   // ---------------------------------------------
 
   private setkeyboardBindings() {
     screen.key(['C-c', 'q'], () => this.exit())
+    screen.key(['c'], () => this.clearCache())
     // Input Mode
     screen.key(['x'], () => this.pasteURL())
     screen.key(['d'], () => this.loadURL())
