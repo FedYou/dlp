@@ -5,7 +5,7 @@
   "homepage": "https://github.com/FedYou/dlp",
   "type": "module",
   "bin": {
-    "dlp": "./bin/dlp"
+    "dlp": "bin/dlp"
   },
   "scripts": {
     "pull:core": "git subtree pull --prefix=core/ https://github.com/FedYou/dlp-core main --squash",
