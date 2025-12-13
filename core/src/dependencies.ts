@@ -99,7 +99,6 @@ async function getVersionYTDLP(): Promise<string> {
     if (now < parseInt(expires)) {
       return version
     } else {
-      console.log('no-cache')
       return await cacheFromFetch(filePath)
     }
   } else {
