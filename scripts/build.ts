@@ -31,4 +31,5 @@ _package.dependencies['dlp-core'] = undefined as any
 
 fs.writeFileSync('dist/package.json', JSON.stringify(_package, null, 2))
 fs.copyFileSync('README.md', 'dist/README.md')
+fs.cpSync('images', 'dist/images', { recursive: true })
 fs.copyFileSync('LICENSE', 'dist/LICENSE')
