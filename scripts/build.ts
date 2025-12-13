@@ -1,4 +1,4 @@
-import { build } from 'esbuild'
+import { build, buildSync } from 'esbuild'
 import { execSync } from 'child_process'
 import fs from 'fs'
 
@@ -6,7 +6,7 @@ import PACKAGE from '../package.json'
 
 const REQUIRE = 'import{createRequire}from"module";var require=createRequire(import.meta.url);'
 
-build({
+buildSync({
   entryPoints: ['src/main.ts'],
   bundle: true,
   minify: true,
@@ -18,7 +18,7 @@ build({
   banner: {
     js: `#!/usr/bin/env node\n;${REQUIRE}`
   }
-}).catch(() => process.exit(1))
+})
 
 execSync('chmod +x dist/bin/dlp')
 
