@@ -67,7 +67,7 @@ export default class Controller {
     let content = ['[q | C-c] exit']
 
     if (this.mode === 'input') {
-      content.push('[c] clear cache')
+      content.push('[c] clear cache' + ` (${core.Cache.getStats().total})`)
     }
 
     if (this.mode === 'error' || this.mode === 'save') {
@@ -357,6 +357,7 @@ export default class Controller {
   private clearCache() {
     if (this.mode !== 'input') return
     core.Cache.clear()
+    this.setFooter()
   }
 
   // ---------------------------------------------
