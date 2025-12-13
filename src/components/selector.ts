@@ -498,6 +498,9 @@ class Selector {
   set visible(visible: boolean) {
     this._visible = visible
     this.ui.box.hidden = !this._visible
+    if (this._visible) {
+      this.hideList()
+    }
     render()
   }
 
