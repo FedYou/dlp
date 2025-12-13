@@ -2,6 +2,7 @@
   "name": "dlp",
   "version": "0.0.1",
   "description": "Download Player",
+  "homepage": "https://github.com/FedYou/dlp",
   "type": "module",
   "bin": {
     "dlp": "./bin/dlp"
