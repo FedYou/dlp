@@ -67,7 +67,7 @@ export default class Controller {
     let content = ['[q | C-c] exit']
 
     if (this.mode === 'input') {
-      content.push('[c] clear cache' + ` (${core.Cache.getStats().total})`)
+      content.push('[v] clear cache' + ` (${core.Cache.getStats().total})`)
     }
 
     if (this.mode === 'error' || this.mode === 'save') {
@@ -366,7 +366,7 @@ export default class Controller {
 
   private setkeyboardBindings() {
     screen.key(['C-c', 'q'], () => this.exit())
-    screen.key(['c'], () => this.clearCache())
+    screen.key(['v'], () => this.clearCache())
     // Input Mode
     screen.key(['x'], () => this.pasteURL())
     screen.key(['d'], () => this.loadURL())
