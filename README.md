@@ -35,6 +35,11 @@ dlp --version ## or -v Get DLP version
 
 DLP is very intuitive and easy to use; you will have no trouble understanding it.
 
+### Where are files saved?
+
+Files are saved in a folder called `dlp` in the user's home directory.
+At the end of each video or audio download, it will tell you exactly where it was saved.
+
 ---
 
 Please report any errors you find [here](https://github.com/FedYou/dlp/issues/new), and I will try to fix them as soon as possible.
