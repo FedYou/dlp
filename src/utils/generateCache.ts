@@ -58,7 +58,7 @@ export default function (json: JSON, options: DataOptions): JSONResult {
   const key = sha256('keys' + platform + id + type + vformat + vquality + language)
 
   if (existsCache(key)) {
-    return youfile.read.jsonSync(resolveCache(key)) as JSONResult
+    return youfile.ReadSync.json(resolveCache(key)) as JSONResult
   }
 
   const NAMES = {
@@ -85,7 +85,7 @@ export default function (json: JSON, options: DataOptions): JSONResult {
     jpeg: resolveCache(NAMES.jpeg)
   }
 
-  youfile.write.jsonSync(resolveCache(key), { NAMES, PATHS }, 0)
+  youfile.WriteSync.json(resolveCache(key), { NAMES, PATHS }, { spaces: 0 })
 
   return { NAMES, PATHS }
 }

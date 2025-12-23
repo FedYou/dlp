@@ -1,6 +1,6 @@
 {
   "name": "dlp-core",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Core for DLP",
   "main": "./src/main.ts",
   "type": "module",
@@ -13,6 +13,6 @@
   "dependencies": {
     "aria2": "^4.1.2",
     "youcache": "^1.0.4",
-    "youfile": "^1.0.11"
+    "youfile": "^2.0.1"
   }
 }

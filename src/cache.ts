@@ -34,7 +34,7 @@ function fastFileType(filePath: string): 'unknown' | 'audio' | 'image' | 'video'
 }
 
 function getStats(): CacheStats {
-  const files = youfile.get.allFilesSync(cache.path)
+  const files = youfile.SearchSync.files(cache.path, { recursive: true })
   const sizes = {
     unknown: 0,
     audio: 0,
@@ -59,8 +59,8 @@ function getStats(): CacheStats {
 }
 
 function clear() {
-  youfile.removeExistsSync(cache.path)
-  youfile.write.dirSync(cache.path)
+  youfile.removeSync(cache.path, { exists: true })
+  youfile.WriteSync.dir(cache.path)
 }
 
 export default {
