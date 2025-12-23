@@ -47,7 +47,7 @@ function VarLine({
   width: number
 }): string {
   const maxLength = width - (6 + label.length) // 3 = 2 spaces + 1 : + 2 spaces + 1 space
-  const eclipse = eclipseStr(text.replace('\n', ' '), maxLength)
+  const eclipse = eclipseStr(text.replace(/\n/g, ' '), maxLength)
   return (
     Space(2) + Style(label)('bold') + ' : ' + (underline ? Style(eclipse)('underline') + '' : eclipse)
   )

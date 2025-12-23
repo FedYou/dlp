@@ -177,18 +177,18 @@ class Selector {
   private buildBoxContent(): string {
     if (!this.data) return ''
 
-    const { title, description, date, duration, totalSize } = this.data
+    const { platform, title, description, date, duration, totalSize } = this.data
 
     const _title = {
       label: LABELS.TITLE,
-      text: title,
+      text: platform === 'tiktok' ? description : title,
       underline: true,
       width: this.boxWidth
     }
 
     const _description = {
       label: LABELS.DESCRIPTION,
-      text: description.includes('\n') ? description.replace(/\n/g, Space(2)) : description,
+      text: description,
       underline: false,
       width: this.boxWidth
     }
