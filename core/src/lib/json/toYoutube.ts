@@ -72,6 +72,10 @@ export default function (json: any): JSON {
     }
 
     if (format.resolution === 'audio only') {
+      if (format.language === null) {
+        formats.audio = formatAudio(format)
+        return
+      }
       if (formats.audio === null) {
         formats.audio = {}
       }
@@ -83,8 +87,10 @@ export default function (json: any): JSON {
     }
   })
 
-  for (const lang in formats.audio) {
-    formats.audio[lang] = betterAudio(formats.audio[lang])
+  if (json.language !== null) {
+    for (const lang in formats.audio) {
+      formats.audio[lang] = betterAudio(formats.audio[lang])
+    }
   }
 
   formats.mp4 = formats.mp4.reverse()

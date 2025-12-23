@@ -83,7 +83,7 @@ async function fetchGithubVersion(): Promise<string> {
 async function cacheFromFetch(filePath: string): Promise<string> {
   const version = await fetchGithubVersion()
   const ONE_HOUR = 3600 * 1000
-  youfile.write.fileSync(filePath, version + '|' + (Date.now() + ONE_HOUR))
+  youfile.WriteSync.file(filePath, version + '|' + (Date.now() + ONE_HOUR))
   return version
 }
 
@@ -91,7 +91,7 @@ async function getVersionYTDLP(): Promise<string> {
   const filePath = cache.path + '/yt-dlp'
 
   if (youfile.existsSync(filePath)) {
-    const file = youfile.read.fileSync(filePath, 'utf-8') as any
+    const file = youfile.ReadSync.file(filePath, { encoding: 'utf8' })
     const [version, expires] = file.split('|')
 
     const now = Date.now()

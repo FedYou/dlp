@@ -125,7 +125,7 @@ async function dlf({
     await aria2.open()
 
     // Start download
-    await youfile.removeExists(path.join(cache.path, FILE_TEMP_NAME))
+    await youfile.remove(path.join(cache.path, FILE_TEMP_NAME), { exists: true })
 
     const gidOptions = { ...GID_OPTIONS, dir: cache.path, out: FILE_TEMP_NAME }
 
