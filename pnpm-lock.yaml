@@ -37,8 +37,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4
       youfile:
-        specifier: ^1.0.11
-        version: 1.0.11
+        specifier: ^2.0.1
+        version: 2.0.1
     devDependencies:
       '@types/node':
         specifier: ^24.9.2
@@ -382,8 +382,8 @@ packages:
   youfile@1.0.10:
     resolution: {integrity: sha512-bPFM3y7OdKOssscZ3iJNdA08F4UyZW5e2Gr6lIBFhiufl0ej5/NjpOOh/14ffvJNgH97EsaaSBLGl6ERuq6zOg==}
 
-  youfile@1.0.11:
-    resolution: {integrity: sha512-533GHC/kLC5/ICJLWKfF1yJmReAFlml8IbfWABcARn9LX/4B1VjyVafiUu+CqBrOo3ppzHgsuz+UJXhA6mvdtg==}
+  youfile@2.0.1:
+    resolution: {integrity: sha512-Cufci/xQsK7Q0kvcrDIFiHtIvuliShrbwSa0kTHcLDPa6mZcGSXZSEBsQgokrCSOu/0mBusJkPFFoN0oAEyslQ==}
 
 snapshots:
 
@@ -638,4 +638,4 @@ snapshots:
 
   youfile@1.0.10: {}
 
-  youfile@1.0.11: {}
+  youfile@2.0.1: {}
