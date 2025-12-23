@@ -203,7 +203,7 @@ export default class Controller {
           (format) => `${format.resolution_note} (${getSize(format.filesize as any)})`
         ) ?? []
 
-      if (formats.audio) {
+      if (!(formats.audio as any)?.url) {
         data.formats.audio = []
 
         for (const key in (formats as any).audio) {
@@ -213,7 +213,7 @@ export default class Controller {
       }
     }
 
-    if (data.platform === 'instagram' && this.dlp.isAudioAvailable()) {
+    if ((formats.audio as any)?.url && this.dlp.isAudioAvailable()) {
       data.formats.audio = `mp3 (${getSize((formats as any).audio.filesize) ?? 0})`
     } else if (data.platform !== 'youtube') {
       data.formats.audio = this.dlp.isAudioAvailable()
