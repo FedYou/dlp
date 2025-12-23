@@ -101,11 +101,23 @@ export default class DLP {
     if (!this.json) this.setErrorNoJSON()
     let amount = 0
     const { audio } = this.json.formats
-    if ((type === 'onlyAudio' || type === 'video') && this.platform === 'instagram') {
+    if (this.platform === 'instagram' && (type === 'onlyAudio' || type === 'video')) {
       amount += audio?.filesize ?? 0
     }
 
-    if (this.platform === 'youtube' && (type === 'video' || type === 'onlyAudio')) {
+    if (
+      this.platform === 'youtube' &&
+      this.json.language === null &&
+      (type === 'onlyAudio' || type === 'video')
+    ) {
+      amount += audio?.filesize ?? 0
+    }
+
+    if (
+      this.platform === 'youtube' &&
+      this.json.language !== null &&
+      (type === 'video' || type === 'onlyAudio')
+    ) {
       const _language = audio[language as any] ?? audio[this.json.language]
       amount += (_language as any)?.filesize ?? 0
     }

@@ -59,11 +59,12 @@ export default async function ({ json, options, on }: MediaDownloadOptions) {
 
     let url: string = ''
 
-    if (platform === 'youtube') {
+    if (platform === 'youtube' && !(formats.audio as any)?.url) {
       url = (
-        (formats as any).audio[options?.language as string] ?? (formats as any).audio[json.language]
+        (formats as any).audio[options?.language as string] ??
+        (formats as any).audio[json.language as string]
       ).url
-    } else if (platform === 'instagram') {
+    } else {
       url = (formats as any).audio.url
     }
 
