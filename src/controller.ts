@@ -3,6 +3,7 @@ import core from 'dlp-core'
 import clipboard from 'clipboardy'
 import os from 'os'
 import path from 'path'
+import serializeName from 'utils/serializeName'
 
 import { screen, destroy } from 'global/screen'
 import platformURL from 'dlp-core/src/utils/platformURL'
@@ -321,7 +322,8 @@ export default class Controller {
     const dir = path.join(os.homedir(), 'dlp')
     let ext = '.' + output.format
 
-    const fileName = this.dlp.info.title + `[${Math.random().toString(36).slice(2)}]` + ext
+    let fileName = this.dlp.info.title + `[${Math.random().toString(36).slice(2)}]` + ext
+    fileName = serializeName(fileName)
 
     await this.dlp.saveMedia({ dir, fileName, cover: radio.miniature, metadata: radio.metadata })
 
