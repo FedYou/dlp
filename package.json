@@ -1,6 +1,6 @@
 {
   "name": "dlp-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Download Player",
   "homepage": "https://github.com/FedYou/dlp",
   "type": "module",
